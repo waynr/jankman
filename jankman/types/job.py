@@ -21,7 +21,7 @@ import jinja2
 from jinja2 import meta
 import six
 
-import jenkins_manager.errors as errors
+import jankman.errors as errors
 
 
 @six.add_metaclass(abc.ABCMeta)

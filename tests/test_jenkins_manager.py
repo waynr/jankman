@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-test_jenkins_manager
+test_jankman
 ----------------------------------
 
-Tests for `jenkins_manager` module.
+Tests for `jankman` module.
 """
 
 
@@ -14,8 +14,8 @@ import unittest
 from contextlib import contextmanager
 from click.testing import CliRunner
 
-from jenkins_manager import jenkins_manager
-from jenkins_manager import cli
+from jankman import jankman
+from jankman import cli
 
 
 
@@ -34,7 +34,7 @@ class TestJenkins_manager(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli.main)
         assert result.exit_code == 0
-        assert 'jenkins_manager.cli.main' in result.output
+        assert 'jankman.cli.main' in result.output
         help_result = runner.invoke(cli.main, ['--help'])
         assert help_result.exit_code == 0
         assert '--help  Show this message and exit.' in help_result.output

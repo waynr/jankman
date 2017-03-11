@@ -12,7 +12,7 @@ To install Jenkins Manager, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install jenkins_manager
+    $ pip install jankman
 
 This is the preferred method to install Jenkins Manager, as it will always install the most recent stable release. 
 
@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/waynr/jenkins_manager
+    $ git clone git://github.com/waynr/jankman
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/waynr/jenkins_manager/tarball/master
+    $ curl  -OL https://github.com/waynr/jankman/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/waynr/jenkins_manager
-.. _tarball: https://github.com/waynr/jenkins_manager/tarball/master
+.. _Github repo: https://github.com/waynr/jankman
+.. _tarball: https://github.com/waynr/jankman/tarball/master

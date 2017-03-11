@@ -16,8 +16,8 @@
 
 import testtools
 
-import jenkins_manager.types.job as job
-import jenkins_manager.errors as errors
+import jankman.types.job as job
+import jankman.errors as errors
 
 
 class TestSimpleJob(testtools.TestCase):

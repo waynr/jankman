@@ -19,28 +19,28 @@ test_requirements = [
 ]
 
 setup(
-    name='jenkins_manager',
+    name='jankman',
     version='0.1.0',
     description="Commnad line wrapper around Jenkins Job Builder 2.x+ library.",
     long_description=readme + '\n\n' + history,
     author="Wayne Warren",
     author_email='waynr+jenkins-manager@sdf.org',
-    url='https://github.com/waynr/jenkins_manager',
+    url='https://github.com/waynr/jankman',
     packages=[
-        'jenkins_manager',
+        'jankman',
     ],
-    package_dir={'jenkins_manager':
-                 'jenkins_manager'},
+    package_dir={'jankman':
+                 'jankman'},
     entry_points={
         'console_scripts': [
-            'jenkins_manager=jenkins_manager.cli:main'
+            'jankman=jankman.cli:main'
         ]
     },
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",
     zip_safe=False,
-    keywords='jenkins_manager',
+    keywords='jankman',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

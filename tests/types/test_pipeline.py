@@ -18,8 +18,8 @@ import logging
 import pprint
 import testtools
 
-import jenkins_manager.types.pipeline as pipeline
-import jenkins_manager.types.job as job
+import jankman.types.pipeline as pipeline
+import jankman.types.job as job
 
 import tests.base as base
 
