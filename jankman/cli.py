@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
               default=0,
               count=True)
 @click.option("--conf",
+              metavar="PATH",
               help="path to configuration file",
               default="./jankman.conf")
 def main(v, conf, args=None):
