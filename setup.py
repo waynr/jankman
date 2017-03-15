@@ -11,7 +11,12 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    'jenkins-job-builder==2.0.0.0b1'
+    'jenkins-job-builder==2.0.0.0b1',
+
+    # The following is necessary to avoid shitty package dependency conflicts
+    # in jenkins-job-builder:
+    'pbr>=1.0.0,<2.0',
+    'stevedore==1.20.0',
 ]
 
 test_requirements = [
