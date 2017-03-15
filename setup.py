@@ -21,10 +21,10 @@ test_requirements = [
 setup(
     name='jankman',
     version='0.1.0',
-    description="Commnad line wrapper around Jenkins Job Builder 2.x+ library.",
+    description="Command line wrapper around Jenkins Job Builder 2.x+ library.",
     long_description=readme + '\n\n' + history,
     author="Wayne Warren",
-    author_email='waynr+jenkins-manager@sdf.org',
+    author_email='waynr+jankman@sdf.org',
     url='https://github.com/waynr/jankman',
     packages=[
         'jankman',
