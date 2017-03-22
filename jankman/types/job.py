@@ -67,7 +67,12 @@ class SimpleJob(Job):
             if missing_vars:
                 raise errors.MissingTemplateVariableError(missing_vars, value)
 
-            template = jinja2.Template(value)
+            try:
+                template = jinja2.Template(value)
+            except TypeError as e:
+                self[key] = value
+                continue
+
             self[key] = template.render(dictcopy)
 
         self = dictcopy
