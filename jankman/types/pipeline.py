@@ -15,6 +15,8 @@
 # Define basic jenkins job collections
 
 import abc
+import collections
+import copy
 
 import six
 
@@ -80,6 +82,19 @@ class TriggerParameterizedBuildPipeline(Pipeline):
         if isinstance(job, tuple):
             job = job[0]
         return job.render(param_dict, **kwargs)
+
+    def flatten(self):
+        """Return a generator that produces a flattened copy of this data
+        structure."""
+        def _flatten(l):
+            for item in l:
+                item = copy.deepcopy(item)
+                if (isinstance(item, collections.Iterable) and
+                    not isinstance(item, (dict,str,bytes))):
+                    yield from _flatten(item)
+                else:
+                    yield item
+        yield from _flatten(self)
 
     def render(self, param_dict=None, **kwargs):
         for obj in self:
