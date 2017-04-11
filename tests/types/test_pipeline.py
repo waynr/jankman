@@ -154,3 +154,27 @@ class TestTriggerParameterizedBuildPipeline(base.LoggingFixture,
         self.assertTrue('meow__sour' in tpb1[0]['project'])
         self.assertTrue('meow__salty' in tpb2[0]['project'])
         self.assertTrue('publishers' not in self.j3)
+
+    def test_flatten_method(self):
+        """ Show that TriggerParameterizedBuildPipeline.flatten():
+          * produces a copy of all the items in the object's data structure
+          * produces a "flattened" list so that the TPBP list does not itself
+        contain lists.
+        """
+        j4 = job.TemplateJob(self.j3)
+        j4['qualifier'] = 'salty'
+        p = pipeline.TriggerParameterizedBuildPipeline()
+        p.append(self.j1)
+        p.append([self.j2, self.j3])
+        p.append(j4)
+
+        p.render({
+            "project": "meow",
+        })
+
+        new_p = p.flatten()
+        for item in new_p:
+            self.assertTrue(not isinstance(item, list))
+
+            for original in [self.j1, self.j2, self.j3, j4]:
+                self.assertIsNot(item, original)
