@@ -17,11 +17,9 @@
 import abc
 import copy
 
-import jinja2
-from jinja2 import meta
 import six
 
-import jankman.errors as errors
+from jankman import utils
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -29,8 +27,36 @@ class Job(dict):
     """Base class for Jenkins jobs, defines method interface
     """
 
+    valid_module_types = [
+        'builders',
+        'metadata',
+        'notifications',
+        'parameters',
+        'properties',
+        'publishers',
+        'reporters',
+        'scm',
+        'triggers',
+        'wrappers',
+    ]
+
+    def __get_module_class(self, name):
+        if name in self.keys():
+            return self.__getitem__(name)
+        return None
+
+    def __getattr__(self, name):
+        if name in self.valid_module_types:
+            return self.__get_module_class(name)
+
+        raise AttributeError(name)
+
+    def __setattr__(self, name, value):
+        if name in self.valid_module_types:
+            self.__setitem__(name, value)
+
     @abc.abstractmethod
-    def reify(self, extra_dict=None, **kwargs):
+    def render(self, extra_dict=None, **kwargs):
         """Subclasses that define template attributes must provide an
         implementation of this function that will populate those templates with
         values available on the subclass. This method may also take an optional
@@ -39,40 +65,17 @@ class Job(dict):
         raise NotImplementedError
 
 
-class SimpleJob(Job):
+class TemplateJob(Job):
 
     def __init__(self, *args, **kwargs):
-        super(Job, self).__init__(*args, **kwargs)
+        super(TemplateJob, self).__init__(*args, **kwargs)
 
-    def reify(self, override_dict=None, **kwargs):
+    def render(self, override_dict=None, **kwargs):
         dictcopy = copy.deepcopy(self)
-
         if override_dict is not None:
             dictcopy.update(override_dict)
 
         if len(kwargs.keys()) != 0:
             dictcopy.update(kwargs)
 
-        for key in self:
-            value = self.pop(key)
-
-            # Ensure that we have all the key/value pairs we need in the
-            # mapping object we are applying to the key.
-            env = jinja2.Environment()
-            ast = env.parse(value)
-            undeclared = meta.find_undeclared_variables(ast)
-
-            missing_vars = [var for var in undeclared if var not in dictcopy]
-
-            if missing_vars:
-                raise errors.MissingTemplateVariableError(missing_vars, value)
-
-            try:
-                template = jinja2.Template(value)
-            except TypeError as e:
-                self[key] = value
-                continue
-
-            self[key] = template.render(dictcopy)
-
-        self = dictcopy
+        return utils.render(self, dictcopy)

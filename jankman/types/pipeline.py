@@ -26,7 +26,7 @@ class Pipeline(list):
     """
 
     @abc.abstractmethod
-    def reify(self, override_dict=None, **kwargs):
+    def render(self, param_dict=None, **kwargs):
         """Subclasses that define template attributes must provide an
         implementation of this function that will populate those templates with
         values available on the subclass. This method may also take an optional
@@ -38,21 +38,28 @@ class Pipeline(list):
 class TriggerParameterizedBuildPipeline(Pipeline):
 
     def __init__(self, *args, **kwargs):
-        super(TriggerParameterizedBuildPipeline, self).__init__(*args, **kwargs)
+        super(TriggerParameterizedBuildPipeline, self).__init__(*args,
+                                                                **kwargs)
         self.__jobs = []
         self.__reified = False
 
-    def __connect_jobs(self, upstream, downstream):
-        downstream_name = downstream['name']
-
+    def __connect_jobs(self, upstream, downstream, extra_dict=None):
         trigger = {
-            'project': downstream_name,
             'fail-on-missing': True,
             'current-parameters': True,
+            'trigger-with-no-params': True,
         }
+        if extra_dict is not None:
+            trigger.update(extra_dict)
+
+        if isinstance(downstream, list):
+            trigger['project'] = ','.join([job['name'] for job in downstream])
+        else:
+            trigger['project'] = downstream['name']
+
         if 'publishers' in upstream:
             publishers = [publisher.keys()[0]
-                          for publisher in upstream['publishers']]
+                          for publisher in upstream.publishers]
         else:
             upstream['publishers'] = [
                 {'trigger-parameterized-builds': [trigger]}
@@ -66,17 +73,35 @@ class TriggerParameterizedBuildPipeline(Pipeline):
                 break
 
         if tpb_i:
-            pub = upstream['publishers']
+            pub = upstream.publishers
             pub[tpb_i]['trigger-parameterized-builds'].append(trigger)
 
-    def reify(self, override_dict=None, **kwargs):
-        for job in self:
-            job.reify(override_dict, **kwargs)
+    def __render_job(self, job, param_dict, **kwargs):
+        if isinstance(job, tuple):
+            job = job[0]
+        return job.render(param_dict, **kwargs)
+
+    def render(self, param_dict=None, **kwargs):
+        for obj in self:
+            if isinstance(obj, list):
+                for job in obj:
+                    self.__render_job(job, param_dict, **kwargs)
+                continue
+            self.__render_job(obj, param_dict, **kwargs)
 
         # now that jobs know their names (which they may not have before if
         # they were template strings), connect them using the Trigger
         # Parameterized Build plugin.
-        for i, job in enumerate(self[:-1]):
-            self.__connect_jobs(job, self.__getitem__(i + 1))
+        for i, obj in enumerate(self[:-1]):
+            if isinstance(obj, list):
+                upstream = obj[0]
+            else:
+                upstream = obj
+
+            downstream = self[i + 1]
+            extra_dict = None
+            if isinstance(upstream, tuple):
+                upstream, extra_dict = upstream[:2]
+            self.__connect_jobs(upstream, downstream, extra_dict)
 
         self.__reified = True
