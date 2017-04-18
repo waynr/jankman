@@ -94,6 +94,8 @@ class TriggerParameterizedBuildPipeline(Pipeline):
                     yield from _flatten(item)
                 else:
                     yield item
+            else:
+                raise StopIteration
         yield from _flatten(self)
 
     def render(self, param_dict=None, **kwargs):
