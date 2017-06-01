@@ -9,7 +9,7 @@ PyYAML==3.12
 
 # test requirements
 tox==2.7.0
-flake8==2.6.0
+flake8==3.3.0
 fixtures
 mock
 nose
