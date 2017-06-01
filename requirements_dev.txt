@@ -8,7 +8,7 @@ cryptography==1.9
 PyYAML==3.12
 
 # test requirements
-tox==2.3.1
+tox==2.7.0
 flake8==2.6.0
 fixtures
 mock
