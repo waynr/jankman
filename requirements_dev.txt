@@ -11,6 +11,6 @@ PyYAML==3.12
 tox==2.7.0
 flake8==3.3.0
 fixtures==3.0.0
-mock
+mock==2.0.0
 nose
 testtools
